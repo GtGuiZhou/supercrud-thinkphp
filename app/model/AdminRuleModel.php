@@ -89,6 +89,6 @@ class AdminRuleModel extends Model
             }
         }
         usort($result,function ($a,$b){return $a['order'] > $b['order'];});
-        return $result;``
+        return $result;
     }
 }
