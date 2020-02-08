@@ -25,6 +25,7 @@ class CheckImageCapcha
         if (!ImageCaptchaService::check($captcha)){
             throw new MiddlewareException('验证码错误');
         }
+        ImageCaptchaService::lose($captcha);
         return  $next($request);
     }
 }

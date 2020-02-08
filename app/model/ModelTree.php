@@ -10,17 +10,19 @@ use think\model\Collection;
 class ModelTree
 {
     private $root;
+    private $array = [];
     private $relationMethodsName;
 
     public function __construct(Model $root,$relationMethodName)
     {
         $this->relationMethodsName = $relationMethodName;
         $this->root = $this->build($root,$relationMethodName);
+
     }
 
     private function build(Model $root,$relationMethodName)
     {
-
+        array_push($this->array,$root);
         foreach ($root->$relationMethodName as &$node){
             $node = $this->build($node,$relationMethodName);
         }
@@ -126,5 +128,10 @@ class ModelTree
         if($callback($root)){
             $result->push($root);
         }
+    }
+
+    public function toArray()
+    {
+        return $this->array;
     }
 }

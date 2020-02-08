@@ -12,4 +12,13 @@ class Rule extends AdminController
     {
         $this->model = new AdminRuleModel();
     }
+
+    public function index()
+    {
+        $list = AdminRuleModel::select();
+        $tree = AdminRuleModel::transformTree($list->toArray());
+        return json($tree);
+    }
+
+
 }

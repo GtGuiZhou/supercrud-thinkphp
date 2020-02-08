@@ -19,14 +19,19 @@ class ExceptionHandle extends Handle
                 return json($e->getError(), 422);
             }
 
+            if ($e instanceof NoLoginException){
+                return  json(['msg' => $e->getMessage()],401);
+            }
+
             if ($e instanceof ControllerException || $e instanceof MiddlewareException
                 || $e instanceof ModelException || $e instanceof NoPermissionException
-            || $e instanceof ServiceException || $e instanceof NoLoginException){
-                return  json(['msg' => $e->getMessage()],403);
+            || $e instanceof ServiceException){
+                return  json(['message' => $e->getMessage()],400);
             }
-            Log::error(" [{$request->url()}] ".$e->getMessage());
+            return $this->convertExceptionToResponse($e);
         }
 
+        Log::error(" [{$request->url()}] ".$e->getMessage());
         // 其他错误交给系统处理
         return parent::render($request, $e);
     }

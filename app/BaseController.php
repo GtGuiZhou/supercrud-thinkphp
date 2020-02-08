@@ -22,7 +22,7 @@ abstract class BaseController
 
 
     protected $noNeedLogin = [];
-    protected $noNeedAuth = [];
+    protected $noNeedRule = [];
 
     /**
      * Request实例

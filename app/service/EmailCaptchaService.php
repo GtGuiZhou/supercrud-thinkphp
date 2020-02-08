@@ -50,4 +50,9 @@ EOF;
     {
         return Cache::has("emailcaptcha:$email:$captcha");
     }
+
+    public static function lose($email, $captcha)
+    {
+        return Cache::delete("emailcaptcha:$email:$captcha");
+    }
 }

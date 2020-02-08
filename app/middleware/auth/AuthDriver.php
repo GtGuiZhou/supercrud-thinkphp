@@ -45,4 +45,11 @@ abstract class AuthDriver
      * @return mixed
      */
     abstract public function logout();
+
+    /**
+     * 刷新用户信息
+     * @param AuthUserModelInterface $user
+     * @return mixed
+     */
+    abstract public function flush(AuthUserModelInterface $user);
 }

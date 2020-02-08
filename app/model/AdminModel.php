@@ -26,6 +26,8 @@ class AdminModel extends Model implements AuthUserModelInterface
         }
     }
 
+
+
     /**
      * 给密码加密
      * @param $val
@@ -33,6 +35,10 @@ class AdminModel extends Model implements AuthUserModelInterface
      */
     public function setPasswordAttr($val)
     {
+        // 代表没有修改过秘钥
+        if ($val == $this->password){
+            return  $val;
+        }
         return $this->encryptPassword(($val));
     }
 
@@ -63,7 +69,7 @@ class AdminModel extends Model implements AuthUserModelInterface
      */
     public function validateChildrenAdmin(AdminModel $admin)
     {
-        if (!$this->isRoot() && !$this->role->isChildren($admin->role->id)){
+        if (!$this->role->isChildren($admin->role->id)){
             throw new ModelException('无权操作该管理员');
         }
     }
@@ -77,8 +83,20 @@ class AdminModel extends Model implements AuthUserModelInterface
      */
     public function validateChildrenRole($roleId)
     {
-        if (!$this->isRoot() && !$this->role->isChildren($roleId)){
+        if (!$this->role->isChildren($roleId)){
             throw new ModelException('无权操作该角色');
+        }
+    }
+
+    /**
+     * 验证该角色是否超出本角色管理范围
+     * @param $roleId
+     * @throws ModelException
+     */
+    public function validateRoleOverflow($roleId)
+    {
+        if ($roleId != $this->role_id){
+            $this->validateChildrenRole($roleId);
         }
     }
 
@@ -88,9 +106,7 @@ class AdminModel extends Model implements AuthUserModelInterface
      */
     public function validateHaveRule($ruleId)
     {
-        if (!$this->isRoot() && !$this->role->rules()->where('id',$ruleId)->count() < 0){
-            throw new ModelException('无权操作该规则');
-        }
+        $this->role->validateHaveRule($ruleId);
     }
 
 
@@ -103,8 +119,7 @@ class AdminModel extends Model implements AuthUserModelInterface
 
         if (!$this->role)
             return false;
-
-        $count = $this->role->rules()->where('rule',$rule)->count();
+        $count = $this->role->rules->where('rule',$rule)->count();
 
         return $count > 0;
     }
@@ -117,5 +132,16 @@ class AdminModel extends Model implements AuthUserModelInterface
 
         if (!$this->role) return false;
         return $this->role->isRoot();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isUpdate()
+    {
+        $oldUpdateTime = $this->getAttr('update_time');
+        $this->refresh();
+        $newUpdateTime = $this->getAttr('update_time');
+        return $oldUpdateTime != $newUpdateTime;
     }
 }

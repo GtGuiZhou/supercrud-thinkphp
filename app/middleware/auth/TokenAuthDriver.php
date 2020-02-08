@@ -65,4 +65,13 @@ class TokenAuthDriver extends AuthDriver
             Cache::delete($this->generateTokenName($this->token));
         }
     }
+
+
+    /**
+     * @inheritDoc
+     */
+    public function flush(AuthUserModelInterface $user)
+    {
+        Cache::set($this->token,$user);
+    }
 }

@@ -16,9 +16,9 @@ class AuthMiddleware
      */
     public function handle($request, \Closure $next,$authName)
     {
-        $authConfig = config('auth');
-        $driver = $authConfig[$authName]['driver'];
-        bind('auth',new Auth($driver,$authName));
+        $token = $request->header('token');
+        app()->session->setId($token);
+        bind('auth',new Auth($authName));
         return  $next($request);
     }
 }

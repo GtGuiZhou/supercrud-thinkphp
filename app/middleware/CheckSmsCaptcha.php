@@ -23,6 +23,7 @@ class CheckSmsCaptcha
         if (!SmsCaptchaService::check($phone,$captcha)){
             throw new MiddlewareException('手机验证码错误或已超时');
         }
+        SmsCaptchaService::lose($phone,$captcha);
         return  $next($request);
     }
 }

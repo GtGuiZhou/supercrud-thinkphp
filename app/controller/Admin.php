@@ -64,12 +64,7 @@ class Admin extends AdminController
         return 'success';
     }
 
-    public function flush()
-    {
-        $this->auth->flush();
 
-        return json($this->auth->admin);
-    }
 
 
     public function roleTree()

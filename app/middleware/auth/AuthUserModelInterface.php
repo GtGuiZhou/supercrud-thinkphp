@@ -19,4 +19,13 @@ interface AuthUserModelInterface
      * @return mixed
      */
     public function isRoot();
+
+
+    /**
+     * 检测用户是否已更新
+     * @return mixed
+     */
+    public function isUpdate();
+
+
 }

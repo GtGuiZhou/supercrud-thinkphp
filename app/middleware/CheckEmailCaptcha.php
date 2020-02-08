@@ -27,6 +27,7 @@ class CheckEmailCaptcha
         if (!EmailCaptchaService::check($email,$captcha)){
             throw new MiddlewareException('邮箱验证码错误');
         }
+        EmailCaptchaService::lose($email,$captcha);
         return  $next($request);
     }
 }

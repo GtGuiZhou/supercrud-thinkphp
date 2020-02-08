@@ -12,6 +12,7 @@ use app\model\AdminRuleModel;
 class Auth extends AdminController
 {
     protected $noNeedLogin = ['login','register'];
+    protected $noNeedRule = ['menu','logout'];
 
     protected function initialize()
     {
@@ -35,36 +36,45 @@ class Auth extends AdminController
         }
 
         $token = $this->auth->saveLogin($admin);
-        return json(['token' => $token]);
+
+        return json([
+            'username' => $admin->username
+        ])->header([
+            'set-token' => $token
+        ]);
 
     }
 
-    public function register()
+    public function logout()
     {
-        $data = $this->validate(input(),[
-            'username|用户名' => 'require|length:6,16',
-            'password|密码' => 'require|length:6,16'
-        ]);
-        $admin = $this->model->create([
-            'username' => $data['username'],
-            'password' => $data['password'],
-        ]);
-
-        return json($admin);
+        $this->auth->logout();
     }
+
 
     public function updatePassword()
     {
         $data = $this->validate(input(),[
+            // 必须要依靠非会话信息以外的内容来修改密码,防止中间人攻击
+            'old_password|老密码' => 'require|length:6,16',
             'password|密码' => 'require|length:6,16'
         ]);
-        $this->auth->admin->password = $data['password'];
-        $this->auth->admin->save();
-        $this->auth->flush();
-        return 'success';
+        if ($this->admin->contrastPassword($data['old_password'])){
+            $this->admin->password = $data['password'];
+            $this->admin->save();
+            $this->auth->flush();
+        } else {
+            throw new ControllerException('老密码错误');
+        }
+
     }
 
 
+    public function menu()
+    {
+        $list = $this->admin->role->rules->toArray();
+        $result = AdminRuleModel::transformTree($list,true);
+        return json($result);
+    }
 
     public function rulesTree()
     {
@@ -78,6 +88,14 @@ class Auth extends AdminController
     {
         $list = $this->admin->role->rules->toArray();
         return json($list);
+    }
+
+
+    public function index()
+    {
+        return [
+            'admin' => $this->admin
+        ];
     }
 
 }

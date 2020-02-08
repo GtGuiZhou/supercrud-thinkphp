@@ -29,4 +29,9 @@ class SmsCaptchaService
     {
         return Cache::has("smscaptcha:$phone:$captcha");
     }
+
+    public static function lose($phone,$captcha)
+    {
+        Cache::delete("smscaptcha:$phone:$captcha");
+    }
 }

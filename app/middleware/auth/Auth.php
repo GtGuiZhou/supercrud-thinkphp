@@ -4,7 +4,8 @@
 namespace app\middleware\auth;
 
 
-use app\exceptions\MiddlewareException;
+use app\exceptions\NoLoginException;
+use app\exceptions\NoPermissionException;
 use think\Request;
 
 class Auth
@@ -21,11 +22,7 @@ class Auth
      */
     protected $logged = false;
 
-    /**
-     * 会话维持驱动
-     * @var AuthDriver
-     */
-    protected $driver;
+
 
     /**
      * 用于区分不同模块用户的前缀
@@ -52,11 +49,16 @@ class Auth
      */
     protected $noNeedRule = [];
 
-    public function __construct($driver, $prefix = '')
+    /**
+     * @var object|\think\App
+     */
+    protected $app;
+
+    public function __construct($prefix = '')
     {
-        $this->request = app('request');
+        $this->app = app();
+        $this->request = $this->app->request;
         $this->prefix = $prefix;
-        $this->driver = new $driver($this->request, $this->prefix);
         $this->autoLogin();
 
         // 鉴权
@@ -75,24 +77,27 @@ class Auth
      */
     public function autoLogin()
     {
-        $user = $this->driver->sessionUser();
+        $user = $this->app->session->get($this->prefix);
         if ($user instanceof AuthUserModelInterface) {
+            if($user->isUpdate()){
+                throw new NoLoginException('信息已被更新,请重新登录');
+            }
             $this->user = $user;
             $this->logged = true;
         }
     }
 
     /**
-     * 保存登录状态
+     * 保存登录状态,返回会话id
      * @param AuthUserModelInterface $user
      * @return mixed
      */
     public function saveLogin(AuthUserModelInterface $user)
     {
-        $res = $this->driver->saveLogin($user);
+        $this->app->session->set($this->prefix,$user);
         $this->user = $user;
         $this->logged = true;
-        return $res;
+        return $this->app->session->getId();
     }
 
     /**
@@ -100,7 +105,7 @@ class Auth
      */
     public function logout()
     {
-        return $this->driver->logout();
+        return $this->app->session->delete($this->prefix);
     }
 
     public function isLogin()
@@ -108,21 +113,29 @@ class Auth
         return $this->logged;
     }
 
-
     /**
      * 登录检测
-     * @throws MiddlewareException
+     * @throws NoLoginException
      */
     public function loginPolicy()
     {
         if (in_array($this->request->action(),$this->noNeedLogin)) return;
         if (!$this->isLogin())
-            throw new MiddlewareException('请先登录');
+            throw new NoLoginException('请先登录');
+    }
+
+
+    /**
+     * 将当前会话用户重新保存到会话记录中
+     */
+    public function flush()
+    {
+        $this->app->session->set($this->prefix,$this->user);
     }
 
     /**
      * 规则权限检测
-     * @throws MiddlewareException
+     * @throws NoPermissionException
      */
     public function rulePolicy()
     {
@@ -131,10 +144,12 @@ class Auth
         if ($this->isLogin() && !$this->user->isRoot() ) {
             $rule = $this->request->controller() . '/' . $this->request->action();
             if (!$this->user->haveRule(strtolower($rule))) {
-                throw new MiddlewareException('无权访问');
+                throw new NoPermissionException('无权访问');
             }
         }
     }
+
+
 
 
 }

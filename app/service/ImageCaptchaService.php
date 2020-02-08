@@ -27,4 +27,9 @@ class ImageCaptchaService
         $captcha = strtolower($captcha);
         return Cache::has("imagecaptcha:$captcha");
     }
+
+    public static function lose($captcha)
+    {
+        Cache::delete("imagecaptcha:$captcha");
+    }
 }

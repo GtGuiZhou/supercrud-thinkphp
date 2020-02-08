@@ -22,7 +22,9 @@ class SessionAuthDriver extends AuthDriver
      */
     public function sessionUser()
     {
-        return Session::get($this->prefix);
+        $user = Session::get($this->prefix);
+        $this->user = $user;
+        return $user;
     }
 
     /**
@@ -39,5 +41,14 @@ class SessionAuthDriver extends AuthDriver
     public function logout()
     {
         Session::delete($this->prefix);
+    }
+
+
+    /**
+     * @inheritDoc
+     */
+    public function flush(AuthUserModelInterface $user)
+    {
+        Session::set($this->prefix,$user);
     }
 }
