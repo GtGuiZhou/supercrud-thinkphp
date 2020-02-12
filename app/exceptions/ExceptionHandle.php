@@ -20,12 +20,12 @@ class ExceptionHandle extends Handle
             }
 
             if ($e instanceof NoLoginException){
-                return  json(['msg' => $e->getMessage()],401);
+                return  json(['message' => $e->getMessage()],401);
             }
 
             if ($e instanceof ControllerException || $e instanceof MiddlewareException
                 || $e instanceof ModelException || $e instanceof NoPermissionException
-            || $e instanceof ServiceException){
+                || $e instanceof ServiceException){
                 return  json(['message' => $e->getMessage()],400);
             }
             return $this->convertExceptionToResponse($e);

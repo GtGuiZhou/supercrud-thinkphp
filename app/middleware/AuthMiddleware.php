@@ -3,6 +3,7 @@ declare (strict_types = 1);
 
 namespace app\middleware;
 
+use app\exceptions\NoLoginException;
 use app\middleware\auth\Auth;
 
 class AuthMiddleware
@@ -16,8 +17,6 @@ class AuthMiddleware
      */
     public function handle($request, \Closure $next,$authName)
     {
-        $token = $request->header('token');
-        app()->session->setId($token);
         bind('auth',new Auth($authName));
         return  $next($request);
     }

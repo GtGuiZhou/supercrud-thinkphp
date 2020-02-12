@@ -47,11 +47,15 @@ Route::get('think', function () {
 Route::get('hello/:name', 'index/hello');
 
 
-Route::group('user', function () {
-    Route::post('login', 'login');
-    Route::post('register', 'register');
-    Route::put('updatePassword', 'updatePassword');
-})->prefix('user/');
+Route::group('', function () {
+    Route::post('login', 'user.auth/login')
+        ->middleware(\app\middleware\IntervalGuard::class, 60, 10)
+        ->middleware(\app\middleware\CheckImageCapcha::class);
+    Route::post('register', 'user.auth/register')
+        ->middleware(\app\middleware\CheckImageCapcha::class);
+    // 活动列表
+    Route::get('/self', 'user.auth/self');
+})->middleware(\app\middleware\AuthMiddleware::class, 'user');
 
 
 Route::group('admin', function () {
@@ -88,3 +92,11 @@ Route::group('api/captcha', function () {
     Route::post('email', 'email')
         ->middleware(\app\middleware\IntervalGuard::class, 60, 1);
 })->prefix('api.captcha/');
+
+
+// 上传文件
+Route::post('api/file/upload','api.file/upload');
+Route::post('api/file/uploadMulit','api.file/uploadMulit');
+
+
+Route::any('pay/notify/paid','pay.notify/paid');

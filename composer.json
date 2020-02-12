@@ -27,7 +27,8 @@
         "overtrue/easy-sms": "^1.1",
         "gregwar/captcha": "^1.1",
       "ext-gd": "*",
-        "swiftmailer/swiftmailer": "^6.2"
+        "swiftmailer/swiftmailer": "^6.2",
+        "overtrue/wechat": "~4.0"
     },
     "require-dev": {
         "symfony/var-dumper": "^4.2",

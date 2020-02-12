@@ -51,5 +51,8 @@ class UserModel extends Model
         return md5($password);
     }
 
-
+    public function payOrder()
+    {
+        return $this->belongsToMany(PayOrderModel::class,'user_pay_order','out_trade_no','user_id');
+    }
 }

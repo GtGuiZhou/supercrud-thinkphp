@@ -3,8 +3,11 @@ declare (strict_types = 1);
 
 namespace app;
 
-use app\service\UserAuth;
+use app\exceptions\ControllerException;
+use app\model\UserModel;
 use think\App;
+use think\db\Query;
+use think\Model;
 
 /**
  * 用户控制器基础类
@@ -13,25 +16,26 @@ class UserController extends BaseController
 {
 
     /**
-     * @var UserAuth
-     */
-    protected $auth;
-
-    /**
-     * 当前登录用户
-     * @var model\UserModel
+     * 登录的用户模型
+     * @var UserModel
      */
     protected $user;
+
+    /**
+     * @var Model
+     */
+    protected $model;
 
 
     public function __construct(App $app)
     {
         parent::__construct($app);
-        $token = $this->request->header('Authentication','');
-        $this->auth = new UserAuth($token,$this->noNeedLogin);
-        if ($this->auth->isLogin()){
-            $this->user = $this->auth->user;
+
+        // 为了方便操作将登录用户绑定到当前类
+        if ($this->auth && $this->auth->isLogin()){
+            $this->user = &$this->auth->user;
         }
-        $this->auth->validateAction($this->request->action());
     }
+
+
 }

@@ -39,7 +39,7 @@ class AdminController extends BaseController
         parent::__construct($app);
 
         // 为了方便操作将登录用户绑定到当前类
-        if ($this->auth->isLogin()){
+        if ($this->auth && $this->auth->isLogin()){
             $this->admin = &$this->auth->user;
         }
     }
@@ -50,14 +50,15 @@ class AdminController extends BaseController
         $size = $this->request->get('size',10);
         $search = $this->request->get('search');
         $order = $this->request->get('order');
+        $query = function (Query $query) use ($search,$order){
+            if ($search){
+                $query->whereLike($this->searchField,"%$search%");
+            }
+        };
         $list = $this->model->page($page,$size)
-            ->where(function (Query $query) use ($search,$order){
-                if ($search){
-                    $query->whereLike($this->searchField,"%$search%");
-                }
-            })->select();
-
-        return json($list);
+            ->where($query)->select();
+        $total = $this->model->where($query)->count();
+        return json(['data' => $list,'total' => $total]);
     }
 
     public function update($id)
@@ -79,12 +80,13 @@ class AdminController extends BaseController
             throw new ControllerException('删除数据不存在');
         }
         $model->delete();
+
     }
 
     public function insert()
     {
         $data = $this->validate($this->request->post(),$this->insertValidate);
-        $model = $this->model->create($data);
+        $model = $this->model->save($data);
         if(!$model->isExists()){
             throw new ControllerException('新增数据失败');
         }

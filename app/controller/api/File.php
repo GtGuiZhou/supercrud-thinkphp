@@ -9,15 +9,25 @@ use think\facade\Filesystem;
 
 class File extends BaseController
 {
+
+
     public function upload()
     {
-        $files = $this->request->post('file');
-        $files = is_array($files) ? $files : [$files];
+        $file = $this->request->file('file');
+        $result = Filesystem::disk('public')->putFIle('topic', $file, 'md5');
+        $prefix = config('filesystem.disks.public.url');
+        return json($prefix.'/'.$result);
+    }
+
+    public function uploadMulti()
+    {
+        $files = $this->request->file('file');
         $result = [];
+        $prefix = config('filesystem.disks.public.url');
         foreach ($files as $file) {
-            $result[] = Filesystem::disk('public')->putFIle('topic', $file, 'md5');
+            $result[] = $prefix.'/'.Filesystem::disk('public')->putFIle('topic', $file, 'md5');
         }
 
-        return $result;
+        return json($result);
     }
 }
