@@ -4,6 +4,8 @@ declare (strict_types = 1);
 namespace app;
 
 use app\middleware\auth\Auth;
+use app\model\AdminModel;
+use app\model\UserModel;
 use think\App;
 use think\exception\ValidateException;
 use think\Validate;
@@ -13,6 +15,18 @@ use think\Validate;
  */
 abstract class BaseController
 {
+
+    /**
+     * 登录的管理员模型
+     * @var AdminModel
+     */
+    protected $admin;
+
+    /**
+     * 登录的用户模型
+     * @var UserModel
+     */
+    protected $user;
 
     /**
      * 鉴权对象
@@ -59,6 +73,11 @@ abstract class BaseController
         $this->request = $this->app->request;
         if ($this->app->exists('auth')){
             $this->auth = $this->app->auth;
+        }
+        // 为了方便操作将登录用户绑定到当前类
+        if ($this->auth && $this->auth->isLogin()){
+            $this->admin = &$this->auth->user;
+            $this->user = &$this->auth->user;
         }
         // 控制器初始化
         $this->initialize();

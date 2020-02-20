@@ -16,11 +16,7 @@ use think\Model;
 class AdminController extends BaseController
 {
 
-    /**
-     * 登录的管理员模型
-     * @var AdminModel
-     */
-    protected $admin;
+
 
     /**
      * @var Model
@@ -34,15 +30,6 @@ class AdminController extends BaseController
     protected $updateValidate = [];
     protected $insertValidate = [];
 
-    public function __construct(App $app)
-    {
-        parent::__construct($app);
-
-        // 为了方便操作将登录用户绑定到当前类
-        if ($this->auth && $this->auth->isLogin()){
-            $this->admin = &$this->auth->user;
-        }
-    }
 
     public function index()
     {
