@@ -6,13 +6,14 @@ namespace app\middleware\auth;
 
 use app\exceptions\NoLoginException;
 use app\exceptions\NoPermissionException;
+use think\Model;
 use think\Request;
 
 class Auth
 {
     /**
      * 当前登录用户
-     * @var AuthUserModelInterface
+     * @var AuthUserModelInterface|Model
      */
     public $user;
 
@@ -83,6 +84,8 @@ class Auth
                 throw new NoLoginException('信息已被更新,请重新登录');
             }
             $this->user = $user;
+            // 防止数据更新造成影响
+            $this->user->refresh(true);
             $this->logged = true;
         }
     }
@@ -130,6 +133,7 @@ class Auth
      */
     public function flush()
     {
+        $this->user->refresh(true);
         $this->app->session->set($this->prefix,$this->user);
     }
 

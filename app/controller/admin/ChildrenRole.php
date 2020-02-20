@@ -31,7 +31,7 @@ class ChildrenRole extends AdminController
            'rules|规则' => 'require|array'
         ]);
         $data = $this->request->post();
-        $this->admin->validateRoleOverflow(AdminRoleModel::findOrFail($data['pid']));
+        $this->admin->validateRoleOverflow($data['pid']);
         $model = Db::transaction(function () use ($data){
             $model = AdminRoleModel::create($data);
             $this->relationRules($model,$data['rules']);
