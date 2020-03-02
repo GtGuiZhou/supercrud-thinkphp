@@ -54,10 +54,16 @@ class ChildrenAdmin extends AdminController
 
     public function update($id)
     {
-        $this->admin->validateChildrenRole($id);
-        $this->admin->validateChildrenRole($this->request->post('role_id'));
         $this->model = new AdminModel();
-        return parent::update($id);
+        $model = $this->model->find($id);
+        if (!$model){
+            throw new ControllerException('更新数据不存在');
+        }
+        $this->admin->validateChildrenRole($model->role_id);
+        $this->admin->validateChildrenRole($this->request->post('role_id'));
+        $data = $this->validate($this->request->put(),$this->updateValidate);
+        $model->save($data);
+        return json($model);
     }
 
     public function rulesTree($id)

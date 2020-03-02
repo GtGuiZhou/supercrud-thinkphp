@@ -30,23 +30,43 @@ class AdminController extends BaseController
     protected $updateValidate = [];
     protected $insertValidate = [];
 
+    protected $indexWith = '';
+
+    protected function indexQuery(Query $query){
+    }
+
 
     public function index()
     {
         $page = $this->request->get('page',1);
-        $size = $this->request->get('size',10);
+        $size = $this->request->get('size','all');
         $search = $this->request->get('search');
         $order = $this->request->get('order');
-        $query = function (Query $query) use ($search,$order){
+        $where = $this->request->get('where');
+        $query = function (Query $query) use ($search,$order,$where){
             if ($search){
                 $query->whereLike($this->searchField,"%$search%");
             }
+            if ($where){
+                $where = json_decode(urldecode($where),true);
+                foreach ($where as $key => $val){
+                    if ($val != '') $query->where($key,$val);
+                }
+            }
+            $this->indexQuery($query);
         };
-        $list = $this->model->page($page,$size)
-            ->where($query)->select();
-        $total = $this->model->where($query)->count();
+        $total = $this->model
+            ->where($query)->count();
+
+        if ($size == 'all') $size = $total;
+        $list = $this->model
+            ->page($page,$size)
+            ->where($query)
+            ->with($this->indexWith)
+            ->select();
         return json(['data' => $list,'total' => $total]);
     }
+
 
     public function update($id)
     {
@@ -74,9 +94,6 @@ class AdminController extends BaseController
     {
         $data = $this->validate($this->request->post(),$this->insertValidate);
         $model = $this->model->save($data);
-        if(!$model->isExists()){
-            throw new ControllerException('新增数据失败');
-        }
         return json($model);
     }
 

@@ -38,15 +38,6 @@ function fastPut($method)
     return Route::get($method, $method);
 }
 
-
-//Route::get('index','index.index/index');
-Route::get('think', function () {
-    return 'hello,ThinkPHP6!';
-});
-
-Route::get('hello/:name', 'index/hello');
-
-
 Route::group('', function () {
     Route::post('login', 'user.auth/login')
         ->middleware(\app\middleware\IntervalGuard::class, 60, 10)

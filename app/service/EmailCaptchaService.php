@@ -10,9 +10,12 @@ use Swift_Message;
 use Swift_SmtpTransport;
 use think\facade\Cache;
 use think\helper\Str;
+use think\Session;
 
 class EmailCaptchaService
 {
+
+
 
     public static function send($email)
     {
