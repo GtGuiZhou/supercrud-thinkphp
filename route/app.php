@@ -10,33 +10,11 @@
 // +----------------------------------------------------------------------
 use think\facade\Route;
 
-function fastCrud($prefix)
-{
-    Route::get($prefix, $prefix . '/index');
-    Route::post($prefix, $prefix . '/insert');
-    Route::delete($prefix . '/:id', $prefix . '/delete');
-    Route::put($prefix . '/:id', $prefix . '/update');
-}
+Route::pattern([
+    'id'   => '\d+',
+]);
 
-function fastPost($method)
-{
-    return Route::post($method, $method);
-}
-
-function fastGet($method)
-{
-    return Route::get($method, $method);
-}
-
-function fastDelete($method)
-{
-    return Route::get($method, $method);
-}
-
-function fastPut($method)
-{
-    return Route::get($method, $method);
-}
+Route::get('test','test/index');
 
 Route::group('', function () {
     Route::post('login', 'user.auth/login')
@@ -49,30 +27,7 @@ Route::group('', function () {
 })->middleware(\app\middleware\AuthMiddleware::class, 'user');
 
 
-Route::group('admin', function () {
-    Route::post('login', 'auth/login')
-        ->middleware(\app\middleware\IntervalGuard::class, 60, 10)
-        ->middleware(\app\middleware\CheckImageCapcha::class);
-    Route::post('register', 'auth/register')
-        ->middleware(\app\middleware\CheckImageCapcha::class);
-    Route::put('logout', 'auth/logout');
-    Route::put('updatePassword', 'auth/updatePassword');
-    Route::get('rulesTree', 'auth/rulesTree');
-    Route::get('rulesList', 'auth/rulesList');
-    Route::get('menu', 'auth/menu');
 
-    fastCrud('rule');
-
-    Route::get('childrenRole/:roleId/rulesList', 'childrenRole/rulesList');
-    Route::get('childrenRole/:roleId/rulesTree', 'childrenRole/rulesTree');
-    fastCrud('childrenRole');
-
-
-    fastCrud('childrenAdmin');
-    Route::get('childrenAdmin/:id/rulesTree', 'childrenAdmin/rulesTree');
-    Route::get('childrenAdmin/:id/rulesList', 'childrenAdmin/rulesList');
-})->prefix('admin.')
-    ->middleware(\app\middleware\AuthMiddleware::class, 'admin');
 
 
 Route::group('api/captcha', function () {
@@ -90,4 +45,3 @@ Route::post('api/file/upload','api.file/upload');
 Route::post('api/file/uploadMulit','api.file/uploadMulit');
 
 
-Route::any('pay/notify/paid','pay.notify/paid');

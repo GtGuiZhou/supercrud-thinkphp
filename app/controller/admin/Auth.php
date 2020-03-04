@@ -6,8 +6,9 @@ namespace app\controller\admin;
 
 use app\AdminController;
 use app\exceptions\ControllerException;
+use app\model\AdminRoleMenuModel;
 use app\model\AdminModel;
-use app\model\AdminRuleModel;
+use app\model\AdminRoleRuleModel;
 
 class Auth extends AdminController
 {
@@ -37,9 +38,7 @@ class Auth extends AdminController
 
         $token = $this->auth->saveLogin($admin);
 
-        return json([
-            'username' => $admin->username
-        ])->header([
+        return json($admin)->header([
             'set-token' => $token
         ]);
 
@@ -71,15 +70,19 @@ class Auth extends AdminController
 
     public function menu()
     {
-        $list = $this->admin->role->rules->toArray();
-        $result = AdminRuleModel::transformTree($list,true);
+        $result = [];
+        if ($this->admin->isRootRole()){
+            $result =  AdminRoleMenuModel::select();
+        } else {
+            $this->admin->role()->menu()->select();
+        }
         return json($result);
     }
 
     public function rulesTree()
     {
         $list = $this->admin->role->rules->toArray();
-        $result = AdminRuleModel::transformTree($list);
+        $result = AdminRoleRuleModel::transformTree($list);
         return json($result);
 
     }

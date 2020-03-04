@@ -4,18 +4,19 @@ declare (strict_types = 1);
 namespace app\model;
 
 use app\exceptions\ModelException;
-use app\middleware\auth\AuthUserModelInterface;
 use think\Model;
 
 /**
  * @mixin think\Model
  */
-class AdminModel extends Model implements AuthUserModelInterface
+class AdminModel extends Model
 {
     //
     protected $table = 'admin';
 
     protected $childrenRoleTree = null;
+
+    protected $readonly = ['username'];
 
 
     public static function onBeforeInsert(Model $model)
@@ -57,91 +58,26 @@ class AdminModel extends Model implements AuthUserModelInterface
         return md5($password);
     }
 
+
+
     public function role()
     {
         return $this->belongsTo(AdminRoleModel::class,'role_id','id');
     }
 
-    /**
-     * 是否为子管理员
-     * @param AdminModel $admin
-     * @return mixed
-     */
-    public function validateChildrenAdmin(AdminModel $admin)
+
+    public function isRootRole()
     {
-        if (!$this->role->isChildren($admin->role->id)){
-            throw new ModelException('无权操作该管理员');
-        }
-    }
-
-
-
-    /**
-     * 验证是不是子角色
-     * @param int $roleId
-     * @throws ModelException
-     */
-    public function validateChildrenRole($roleId)
-    {
-        if (!$this->role->isChildren($roleId)){
-            throw new ModelException('无权操作该角色');
-        }
+        return $this->root == 'yes';
     }
 
     /**
-     * 验证该角色是否超出本角色管理范围
-     * @param $roleId
-     * @throws ModelException
-     */
-    public function validateRoleOverflow($roleId)
-    {
-        if ($roleId != $this->role_id){
-            $this->validateChildrenRole($roleId);
-        }
-    }
-
-    /**
-     * 验证是否含有该规则
-     * @param int $ruleId
-     */
-    public function validateHaveRule($ruleId)
-    {
-        $this->role->validateHaveRule($ruleId);
-    }
-
-
-
-    /**
-     * @inheritDoc
+     * 查询当前管理员是否含有
+     * @param string $rule
+     * @return bool
      */
     public function haveRule($rule)
     {
-
-        if (!$this->role)
-            return false;
-        $count = $this->role->rules->where('rule',$rule)->count();
-
-        return $count > 0;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function isRoot()
-    {
-
-        if (!$this->role) return false;
-        return $this->role->isRoot();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function isUpdate()
-    {
-        $oldUpdateTime = $this->getAttr('update_time');
-        $this->refresh();
-        $newUpdateTime = $this->getAttr('update_time');
-        return $oldUpdateTime != $newUpdateTime;
+        return $this->isRootRole() || $this->role()->rule->where('rule',$rule)->find();
     }
 }

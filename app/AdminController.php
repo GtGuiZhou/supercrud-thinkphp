@@ -15,9 +15,6 @@ use think\Model;
  */
 class AdminController extends BaseController
 {
-
-
-
     /**
      * @var Model
      */
@@ -28,6 +25,7 @@ class AdminController extends BaseController
      */
     protected $searchField = '';
     protected $updateValidate = [];
+    protected $updatePolicy = []; // 不允许更新的字段
     protected $insertValidate = [];
 
     protected $indexWith = '';
@@ -75,6 +73,9 @@ class AdminController extends BaseController
         $model = $this->model->find($id);
         if (!$model){
             throw new ControllerException('更新数据不存在');
+        }
+        foreach ($this->updatePolicy as $field){
+            unset($data[$field]);
         }
         $model->save($data);
         return json($model);

@@ -3,7 +3,7 @@ declare (strict_types = 1);
 
 namespace app\command;
 
-use app\model\AdminRuleModel;
+use app\model\AdminRoleRuleModel;
 use think\console\Command;
 use think\console\Input;
 use think\console\input\Argument;
@@ -26,11 +26,11 @@ class Rule extends Command
     	// 指令输出
         $rule = $input->getArgument('rule');
     	$controllerName = $input->getArgument('controllerName');
-        $menu = AdminRuleModel::create(['rule' => $rule,'name' => $controllerName,'is_menu' => 'yes']);
-        AdminRuleModel::create(['rule' => $rule.'/delete','name' => '删除','pid' => $menu->id]);
-        AdminRuleModel::create(['rule' => $rule.'/update','name' => '更新','pid' => $menu->id]);
-        AdminRuleModel::create(['rule' => $rule.'/insert','name' => '新增','pid' => $menu->id]);
-        AdminRuleModel::create(['rule' => $rule.'/index','name' => '查看','pid' => $menu->id]);
+        $menu = AdminRoleRuleModel::create(['rule' => $rule,'name' => $controllerName,'is_menu' => 'yes']);
+        AdminRoleRuleModel::create(['rule' => $rule.'/delete','name' => '删除','pid' => $menu->id]);
+        AdminRoleRuleModel::create(['rule' => $rule.'/update','name' => '更新','pid' => $menu->id]);
+        AdminRoleRuleModel::create(['rule' => $rule.'/insert','name' => '新增','pid' => $menu->id]);
+        AdminRoleRuleModel::create(['rule' => $rule.'/index','name' => '查看','pid' => $menu->id]);
 
     }
 }

@@ -76,8 +76,8 @@ abstract class BaseController
         }
         // 为了方便操作将登录用户绑定到当前类
         if ($this->auth && $this->auth->isLogin()){
-            $this->admin = &$this->auth->user;
-            $this->user = &$this->auth->user;
+            $this->admin = $this->auth->user;
+            $this->user = $this->auth->user;
         }
         // 控制器初始化
         $this->initialize();
