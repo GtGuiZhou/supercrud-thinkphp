@@ -8,6 +8,7 @@ use app\model\AdminModel;
 use app\model\UserModel;
 use think\App;
 use think\exception\ValidateException;
+use think\Model;
 use think\Validate;
 
 /**
@@ -62,6 +63,20 @@ abstract class BaseController
      */
     protected $middleware = [];
 
+
+    /**
+     * 当前控制器所操作的模型
+     * @var Model
+     */
+    protected $model;
+
+
+    /**
+     * 自动根据get中的id获取模型数据
+     * @var Model
+     */
+    protected $autoGetModel;
+
     /**
      * 构造方法
      * @access public
@@ -79,8 +94,13 @@ abstract class BaseController
             $this->admin = $this->auth->user;
             $this->user = $this->auth->user;
         }
+
         // 控制器初始化
         $this->initialize();
+        $id = $this->request->get('id', false);
+        if ($this->model && $id !== false ){
+            $this->autoGetModel = $this->model->findOrFail($id);
+        }
     }
 
     // 初始化

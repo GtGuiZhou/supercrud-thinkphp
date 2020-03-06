@@ -15,10 +15,6 @@ use think\Model;
  */
 class AdminController extends BaseController
 {
-    /**
-     * @var Model
-     */
-    protected $model;
 
     /**
      * @var string 搜索字段
@@ -27,6 +23,7 @@ class AdminController extends BaseController
     protected $updateValidate = [];
     protected $updatePolicy = []; // 不允许更新的字段
     protected $insertValidate = [];
+    protected $indexHiddenField = []; // 输出要隐藏哪些字段
 
     protected $indexWith = '';
 
@@ -61,6 +58,7 @@ class AdminController extends BaseController
             ->page($page,$size)
             ->where($query)
             ->with($this->indexWith)
+            ->hidden($this->indexHiddenField)
             ->select();
         return json(['data' => $list,'total' => $total]);
     }

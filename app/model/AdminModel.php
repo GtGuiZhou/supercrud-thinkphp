@@ -65,6 +65,10 @@ class AdminModel extends Model
         return $this->belongsTo(AdminRoleModel::class,'role_id','id');
     }
 
+    public function loginRecord()
+    {
+        return $this->hasMany(AdminLoginRecordModel::class,'admin_id','id');
+    }
 
     public function isRootRole()
     {
@@ -78,6 +82,6 @@ class AdminModel extends Model
      */
     public function haveRule($rule)
     {
-        return $this->isRootRole() || $this->role()->rule->where('rule',$rule)->find();
+        return $this->isRootRole() || $this->role->rule()->where('rule',$rule)->find();
     }
 }

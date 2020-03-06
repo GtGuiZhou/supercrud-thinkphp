@@ -67,8 +67,11 @@ Route::group('admin', function () {
 Route::group('admin', function () {
     Route::put('logout', 'auth/logout');
     Route::put('updatePassword', 'auth/updatePassword');
+    Route::get('login-record', 'auth/loginRecord');
+    // 菜单
     Route::get('menu', 'auth/menu');
-
+    // 角色
+    Route::get('role/all', 'role/all');
     //    规则
     Route::get('rule', 'rule/index')->name('查看')->option(['__GROUP__' => '规则']);
 })->prefix('admin.')
@@ -86,7 +89,12 @@ Route::group('admin', function () {
     Route::put('role/:id/rule', 'role/updateRule')->name('修改角色规则')->option(['__GROUP__' => '角色']);
 //    管理员
     fastCrud('admin', '管理员');
-    Route::put('admin/:id/root', 'admin/updateRoot')->name('切换超级管理员')->option(['__GROUP__' => '管理员']);
+    Route::put('admin/:id/root', 'admin/updateRoot')
+        ->model(\app\model\AdminModel::class)
+        ->name('切换超级管理员')->option(['__GROUP__' => '管理员']);
+    Route::put('admin/:id/password', 'admin/updatePassword')
+        ->model(\app\model\AdminModel::class)
+        ->name('修改密码')->option(['__GROUP__' => '管理员']);
 })->prefix('admin.')
     ->middleware(\app\middleware\RegisterAuth::class, \app\model\AdminModel::class)
     ->middleware(\app\middleware\LoginPolicy::class)

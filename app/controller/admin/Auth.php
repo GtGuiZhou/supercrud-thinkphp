@@ -9,6 +9,8 @@ use app\exceptions\ControllerException;
 use app\model\AdminRoleMenuModel;
 use app\model\AdminModel;
 use app\model\AdminRoleRuleModel;
+use think\Db;
+use think\Model;
 
 class Auth extends AdminController
 {
@@ -27,6 +29,7 @@ class Auth extends AdminController
             'password|密码' => 'require|length:6,16'
         ]);
         $admin = $this->model->where('username',$data['username'])
+            ->with(['role' => ['rule']])
             ->findOrEmpty();
         if ($admin->isEmpty()){
             throw new ControllerException('账号不存在');
@@ -37,11 +40,16 @@ class Auth extends AdminController
         }
 
         $token = $this->auth->saveLogin($admin);
-
+        $admin->loginRecord()->save(['ip' => $this->request->ip()]);
         return json($admin)->header([
             'set-token' => $token
         ]);
 
+    }
+
+    public function loginRecord()
+    {
+         return json($this->admin->loginRecord()->limit(50)->order('id','desc')->select());
     }
 
     public function logout()
@@ -74,7 +82,7 @@ class Auth extends AdminController
         if ($this->admin->isRootRole()){
             $result =  AdminRoleMenuModel::select();
         } else {
-            $this->admin->role()->menu()->select();
+            $result = $this->admin->role_id?$this->admin->role->menu()->select():[];
         }
         return json($result);
     }

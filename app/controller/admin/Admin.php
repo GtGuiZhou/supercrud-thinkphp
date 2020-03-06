@@ -6,13 +6,19 @@ namespace app\controller\admin;
 
 use app\AdminController;
 use app\model\AdminModel;
+use think\db\Query;
 
 class Admin extends AdminController
 {
-    protected $indexWith = 'role';
+    protected $indexWith = ['role'];
     protected $searchField = 'username';
-    protected $updatePolicy = ['root'];
+    protected $updatePolicy = ['root','password'];
+    protected $indexHiddenField = ['password'];
 
+    protected function indexQuery(Query $query)
+    {
+
+    }
 
     protected function initialize()
     {
@@ -22,18 +28,24 @@ class Admin extends AdminController
             'password|密码' => 'require|length:6,16'
         ];
         $this->updateValidate = [
-            'password|密码' => 'require|length:6,16'
+            'role_id|角色' => 'require'
         ];
     }
 
 
-    public function updateRoot($id)
+    public function updateRoot(AdminModel $admin)
     {
-        $admin = $this->admin->findOrFail($id);
         $status = $this->request->put('status');
         $admin->root = $status;
         $admin->save();
     }
 
+    public function updatePassword(AdminModel $admin)
+    {
+        $this->validate($this->request->put(),['newPassword|新密码' => 'require|length:6,16']);
+        $password = $this->request->put('newPassword');
+        $admin->password = $password;
+        $admin->save();
+    }
 
 }

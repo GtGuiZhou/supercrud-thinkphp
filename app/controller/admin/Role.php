@@ -38,4 +38,9 @@ class Role extends AdminController
             $role->rule()->saveAll($rule,false);
         });
     }
+
+    public function all()
+    {
+        return json($this->model->select());
+    }
 }
