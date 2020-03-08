@@ -25,9 +25,11 @@ class SmsCaptchaService
         Cache::set("smscaptcha:$phone:$captcha",1,60);
     }
 
-    public static function check($phone,$captcha)
+    public static function check($phone,$captcha,$lose = false)
     {
-        return Cache::has("smscaptcha:$phone:$captcha");
+        $res = Cache::has("smscaptcha:$phone:$captcha");
+        if ($lose) self::lose($phone,$captcha);
+        return $res;
     }
 
     public static function lose($phone,$captcha)

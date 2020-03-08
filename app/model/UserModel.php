@@ -55,4 +55,9 @@ class UserModel extends Model
     {
         return $this->belongsToMany(PayOrderModel::class,'user_pay_order','out_trade_no','user_id');
     }
+
+    public function profile()
+    {
+        return $this->hasOne(UserProfileModel::class,'user_id','id');
+    }
 }

@@ -28,7 +28,10 @@
         "gregwar/captcha": "^1.1",
       "ext-gd": "*",
         "swiftmailer/swiftmailer": "^6.2",
-        "overtrue/wechat": "~4.0"
+        "overtrue/wechat": "~4.0",
+        "zircote/swagger-php": "^3.0",
+        "jaybizzle/crawler-detect": "^1.2",
+        "ua-parser/uap-php": "^3.9"
     },
     "require-dev": {
         "symfony/var-dumper": "^4.2",

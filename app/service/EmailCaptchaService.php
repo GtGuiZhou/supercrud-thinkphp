@@ -49,9 +49,11 @@ EOF;
         Cache::set("emailcaptcha:$email:$captcha", 1, 120);
     }
 
-    public static function check($email, $captcha)
+    public static function check($email, $captcha,$lose = false)
     {
-        return Cache::has("emailcaptcha:$email:$captcha");
+        $res =  Cache::has("emailcaptcha:$email:$captcha");
+        if ($lose) self::lose($email,$captcha);
+        return $res;
     }
 
     public static function lose($email, $captcha)

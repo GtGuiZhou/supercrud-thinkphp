@@ -48,4 +48,18 @@ class Admin extends AdminController
         $admin->save();
     }
 
+    /**
+     * 登录某个管理员的账号
+     * @param AdminModel $admin
+     * @return \think\response\Json
+     */
+    public function login(AdminModel $admin)
+    {
+        $token = $this->auth->saveLogin($admin);
+        $admin->loginRecord()->save(['ip' => $this->request->ip()]);
+        return json($admin)->header([
+            'set-token' => $token
+        ]);
+    }
+
 }
