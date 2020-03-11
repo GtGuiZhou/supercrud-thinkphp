@@ -55,7 +55,7 @@ class SessionInit
             $sessionId = $request->cookie($cookieName);
         }
 
-        if ($sessionId) {
+        if ($sessionId && ctype_alnum($sessionId)) {
             $this->session->setId($sessionId);
         }
 

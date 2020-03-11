@@ -115,6 +115,12 @@ Route::group('admin', function () {
 
 // 用户
     fastCrud('user', '用户');
+    Route::put('user/:id/password', 'user/updatePassword')
+        ->model(\app\model\UserModel::class)
+        ->name('修改密码')->option(['__GROUP__' => '用户']);
+    Route::put('user/:id/lock', 'user/updateLock')
+        ->model(\app\model\UserModel::class)
+        ->name('封号')->option(['__GROUP__' => '用户']);
 })->prefix('admin.')
     ->middleware(\app\middleware\RegisterAuth::class, \app\model\AdminModel::class)
     ->middleware(\app\middleware\LoginPolicy::class)
