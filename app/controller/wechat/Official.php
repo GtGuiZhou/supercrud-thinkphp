@@ -4,7 +4,7 @@
 namespace app\controller\wechat;
 
 
-use app\exceptions\ControllerException;
+use app\exceptions\CheckException;
 use app\model\UserModel;
 use app\UserController;
 use EasyWeChat\Factory;
@@ -46,7 +46,7 @@ class Official extends UserController
     /**
      * 授权回调
      * @return \think\response\Redirect
-     * @throws ControllerException
+     * @throws CheckException
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
@@ -73,10 +73,10 @@ class Official extends UserController
             $token = $this->auth->saveLogin($userModel);
             $targetUrl = config('wechat.official.target_url',false);
             $targetUrl = $targetUrl.'?token=' .$token;
-            if (!$targetUrl) throw new ControllerException('未定义回调目标url');
+            if (!$targetUrl) throw new CheckException('未定义回调目标url');
             return redirect($targetUrl);
         } else {
-            throw new ControllerException('授权用户不存在');
+            throw new CheckException('授权用户不存在');
         }
     }
 }

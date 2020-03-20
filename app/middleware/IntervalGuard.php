@@ -3,7 +3,7 @@ declare (strict_types=1);
 
 namespace app\middleware;
 
-use app\exceptions\MiddlewareException;
+use app\exceptions\CheckException;
 use think\facade\Cache;
 
 class IntervalGuard
@@ -17,7 +17,7 @@ class IntervalGuard
      * @param int $maxCount 最多访问几次
      * @param int|null $penaltyTime 超过罚时多少秒
      * @return void
-     * @throws MiddlewareException
+     * @throws CheckException
      */
     public function handle($request, \Closure $next, $intervalSecond, $maxCount, $penaltyTime = null)
     {
@@ -31,7 +31,7 @@ class IntervalGuard
         $count = Cache::get($key, 0);
         if ($count > $maxCount) {
             Cache::set($key,$count,$penaltyTime);
-            throw new MiddlewareException("操作频繁,请等待{$penaltyTime}s后在试");
+            throw new CheckException("操作频繁,请等待{$penaltyTime}s后在试");
         }
         Cache::set($key,$count,$intervalSecond);
         return $next($request);

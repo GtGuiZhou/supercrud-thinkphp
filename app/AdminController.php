@@ -4,7 +4,7 @@ declare (strict_types = 1);
 namespace app;
 
 use app\controller\CrudTrait;
-use app\exceptions\ControllerException;
+use app\exceptions\CheckException;
 use app\model\AdminModel;
 use think\App;
 use think\db\Query;
@@ -70,7 +70,7 @@ class AdminController extends BaseController
         $data = $this->validate($this->request->put(),$this->updateValidate);
         $model = $this->model->find($id);
         if (!$model){
-            throw new ControllerException('更新数据不存在');
+            throw new CheckException('更新数据不存在');
         }
         foreach ($this->updatePolicy as $field){
             unset($data[$field]);
@@ -83,7 +83,7 @@ class AdminController extends BaseController
     {
         $model = $this->model->find($id);
         if (!$model){
-            throw new ControllerException('删除数据不存在');
+            throw new CheckException('删除数据不存在');
         }
         $model->delete();
 

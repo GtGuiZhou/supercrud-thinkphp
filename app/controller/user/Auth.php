@@ -3,7 +3,7 @@ declare (strict_types = 1);
 
 namespace app\controller\user;
 
-use app\exceptions\ControllerException;
+use app\exceptions\CheckException;
 use app\model\UserModel;
 use app\UserController;
 
@@ -26,11 +26,11 @@ class Auth extends UserController
         $admin = $this->model->where('username',$data['username'])
             ->findOrEmpty();
         if ($admin->isEmpty()){
-            throw new ControllerException('账号不存在');
+            throw new CheckException('账号不存在');
         }
 
         if (!$admin->contrastPassword($data['password'])){
-            throw new ControllerException('密码错误');
+            throw new CheckException('密码错误');
         }
 
         $token = $this->auth->saveLogin($admin);
@@ -73,7 +73,7 @@ class Auth extends UserController
             $this->user->save();
             $this->auth->flush();
         } else {
-            throw new ControllerException('老密码错误');
+            throw new CheckException('老密码错误');
         }
 
     }

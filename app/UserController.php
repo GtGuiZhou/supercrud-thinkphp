@@ -3,7 +3,7 @@ declare (strict_types = 1);
 
 namespace app;
 
-use app\exceptions\ControllerException;
+use app\exceptions\CheckException;
 use app\model\UserModel;
 use think\App;
 use think\db\Query;

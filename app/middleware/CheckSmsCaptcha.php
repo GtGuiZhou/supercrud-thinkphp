@@ -3,7 +3,7 @@ declare (strict_types = 1);
 
 namespace app\middleware;
 
-use app\exceptions\MiddlewareException;
+use app\exceptions\CheckException;
 use app\service\SmsCaptchaService;
 
 class CheckSmsCaptcha
@@ -14,14 +14,14 @@ class CheckSmsCaptcha
      * @param \think\Request $request
      * @param \Closure $next
      * @return Response
-     * @throws MiddlewareException
+     * @throws CheckException
      */
     public function handle($request, \Closure $next)
     {
         $phone = $request->post('phone');
         $captcha = $request->post('captcha');
         if (!SmsCaptchaService::check($phone,$captcha)){
-            throw new MiddlewareException('手机验证码错误或已超时');
+            throw new CheckException('手机验证码错误或已超时');
         }
         SmsCaptchaService::lose($phone,$captcha);
         return  $next($request);

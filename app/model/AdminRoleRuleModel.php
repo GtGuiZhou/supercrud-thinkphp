@@ -3,7 +3,7 @@ declare (strict_types=1);
 
 namespace app\model;
 
-use app\exceptions\ModelException;
+use app\exceptions\CheckException;
 use think\Model;
 
 /**

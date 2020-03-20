@@ -3,7 +3,7 @@ declare (strict_types = 1);
 
 namespace app\middleware;
 
-use app\exceptions\MiddlewareException;
+use app\exceptions\CheckException;
 use app\service\ImageCaptchaService;
 
 class CheckImageCapcha
@@ -14,16 +14,16 @@ class CheckImageCapcha
      * @param \think\Request $request
      * @param \Closure $next
      * @return Response
-     * @throws MiddlewareException
+     * @throws CheckException
      */
     public function handle($request, \Closure $next,$fieldName = 'captcha')
     {
         $captcha = $request->post($fieldName);
         if (!$captcha){
-            throw new MiddlewareException('请输入验证码');
+            throw new CheckException('请输入验证码');
         }
         if (!ImageCaptchaService::check($captcha)){
-            throw new MiddlewareException('验证码错误');
+            throw new CheckException('验证码错误');
         }
         ImageCaptchaService::lose($captcha);
         return  $next($request);

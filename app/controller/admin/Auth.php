@@ -5,7 +5,7 @@ namespace app\controller\admin;
 
 
 use app\AdminController;
-use app\exceptions\ControllerException;
+use app\exceptions\CheckException;
 use app\model\AdminModel;
 use app\model\AdminRoleMenuModel;
 use app\model\AdminRoleRuleModel;
@@ -39,11 +39,11 @@ class Auth extends AdminController
         $admin = $this->model->where('username', $data['username'])
             ->findOrEmpty();
         if ($admin->isEmpty()) {
-            throw new ControllerException('账号不存在');
+            throw new CheckException('账号不存在');
         }
 
         if (!$admin->contrastPassword($data['password'])) {
-            throw new ControllerException('密码错误');
+            throw new CheckException('密码错误');
         }
 
         $token = $this->auth->saveLogin($admin);
@@ -74,7 +74,7 @@ class Auth extends AdminController
         ]);
         $this->policyCheck($this->admin);
         if (!EmailCaptchaService::check($data['email'],$data['email_captcha'],true)){
-            throw new ControllerException('新邮箱验证码错误');
+            throw new CheckException('新邮箱验证码错误');
         }
         $this->admin->email = $data['email'];
         $this->admin->save();
@@ -88,7 +88,7 @@ class Auth extends AdminController
         ]);
         $this->policyCheck($this->admin);
         if (!EmailCaptchaService::check($data['phone'],$data['phone_captcha'],true)){
-            throw new ControllerException('新手机验证码错误');
+            throw new CheckException('新手机验证码错误');
         }
         $this->admin->phone = $data['phone'];
         $this->admin->save();
@@ -105,18 +105,18 @@ class Auth extends AdminController
         switch ($credentialsType){
             case 'password': // 验证老密码是否正确
                 if (!$admin->contrastPassword($credentialsValue))
-                    throw new ControllerException('老密码不正确');
+                    throw new CheckException('老密码不正确');
                 break;
             case 'email': // 验证邮件验证码是否正确
-                if (!$admin->email) throw new ControllerException('您还没有设定过邮箱');
+                if (!$admin->email) throw new CheckException('您还没有设定过邮箱');
                 if (!EmailCaptchaService::check($admin->email,$credentialsValue,true)){
-                    throw new ControllerException('邮件验证码不正确');
+                    throw new CheckException('邮件验证码不正确');
                 }
                 break;
             case 'phone':
-                if (!$admin->phone) throw new ControllerException('您还没有设定过手机号码');
+                if (!$admin->phone) throw new CheckException('您还没有设定过手机号码');
                 if (!SmsCaptchaService::check($admin->phone,$credentialsValue,true)){
-                    throw new ControllerException('手机验证码不正确');
+                    throw new CheckException('手机验证码不正确');
                 }
                 break;
             default:

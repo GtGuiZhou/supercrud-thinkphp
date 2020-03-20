@@ -3,7 +3,7 @@ declare (strict_types = 1);
 
 namespace app\model;
 
-use app\exceptions\ModelException;
+use app\exceptions\CheckException;
 use think\Model;
 
 /**
@@ -22,7 +22,7 @@ class UserModel extends Model
     {
         // 检测用户是否已经在系统里面了
         if (UserModel::where('username',$model->username)->find()){
-            throw new ModelException('该用户已存在');
+            throw new CheckException('该用户已存在');
         }
     }
 

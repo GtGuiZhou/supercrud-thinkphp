@@ -3,7 +3,7 @@ declare (strict_types = 1);
 
 namespace app\middleware;
 
-use app\exceptions\NoPermissionException;
+use app\exceptions\CheckException;
 
 class RulePolicy
 {
@@ -13,7 +13,7 @@ class RulePolicy
      * @param \think\Request $request
      * @param \Closure $next
      * @return Response
-     * @throws NoPermissionException
+     * @throws CheckException
      */
     public function handle($request, \Closure $next)
     {
@@ -22,7 +22,7 @@ class RulePolicy
         $method = $request->rule()->getMethod();
         // 通过调用当前用户模型中的haveRule方法判断当前用户是否拥有该权限
         if(!$user->haveRule("$method-$rule")){
-            throw new NoPermissionException();
+            throw new CheckException();
         }
         return  $next($request);
     }
