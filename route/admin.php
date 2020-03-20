@@ -58,6 +58,8 @@ Route::group('admin', function () {
     Route::post('register', 'auth/register')
         ->middleware(\app\middleware\CheckImageCapcha::class);
 
+    // 获取配置
+    Route::get('config','config/index');
 })->middleware(\app\middleware\RegisterAuth::class, \app\model\AdminModel::class)
     ->prefix('admin.');
 
@@ -121,6 +123,9 @@ Route::group('admin', function () {
     Route::put('user/:id/lock', 'user/updateLock')
         ->model(\app\model\UserModel::class)
         ->name('封号')->option(['__GROUP__' => '用户']);
+
+// 配置
+    Route::post('config','config/save')->name('修改')->option(['__GROUP__' => '系统配置']);
 })->prefix('admin.')
     ->middleware(\app\middleware\RegisterAuth::class, \app\model\AdminModel::class)
     ->middleware(\app\middleware\LoginPolicy::class)

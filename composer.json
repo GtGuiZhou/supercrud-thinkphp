@@ -31,7 +31,8 @@
         "overtrue/wechat": "~4.0",
         "zircote/swagger-php": "^3.0",
         "jaybizzle/crawler-detect": "^1.2",
-        "ua-parser/uap-php": "^3.9"
+        "ua-parser/uap-php": "^3.9",
+      "ext-json": "*"
     },
     "require-dev": {
         "symfony/var-dumper": "^4.2",

@@ -9,4 +9,6 @@ return [
     // \think\middleware\LoadLangPack::class,
     // Session初始化
     \app\middleware\SessionInit::class,
+    // 合并文件配置和数据库配置
+    \app\middleware\ConfigInit::class,
 ];
