@@ -11,12 +11,12 @@ class Config extends AdminController
 
     public function index()
     {
-        return config('site');
+        return ['site' => config('site'),'wechat' => config('wechat')];
     }
 
     public function save()
     {
         $data = $this->request->post();
-        cache('config:site',$data);
+        cache('config',$data);
     }
 }

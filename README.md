@@ -14,11 +14,16 @@ ua分布图
 ## 自动部署脚本
 自动切换环境变量文件
 
+## 微信
+### 微信公众号
+1. 校验服务器接口:`http://yourhost/wechat/offical/server-validate`,校验token在`wechat`配置文件中,微信需要通过该接口验证服务器
+2. 请求授权接口:`http://yourhost/wechat/offical/auth`,通过将浏览器跳转到该接口,获取用户的授权信息
+3. 回调接口:`http://yourhost/wechat/offical/callback`,授权成功后,浏览器会跳转到该接口。
 
 ## 待完成
 1. 用户数据更新，其他登录失效
 2. 引入Swagger,参考文档：https://learnku.com/laravel/t/7430/how-to-write-api-documents-based-on-swagger-php
-
+3. 
 
 
 验证码凭证-》验证要保存的的数据-》保存数据
