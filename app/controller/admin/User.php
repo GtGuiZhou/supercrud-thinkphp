@@ -43,4 +43,14 @@ class User extends AdminController
         $user->lock = $status;
         $user->save();
     }
+
+    public function preview()
+    {
+        return [
+            'total' => $this->model->count(),
+            'month_total' => $this->model->whereMonth('create_time')->count(),
+            'week_total' => $this->model->whereWeek('create_time')->count(),
+            'day_total' => $this->model->whereDay('create_time')->count(),
+        ];
+    }
 }

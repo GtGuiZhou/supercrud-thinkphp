@@ -122,6 +122,7 @@ Route::group('admin', function () {
 
 // 用户
     fastCrud('user', '用户');
+    Route::get('user/preview','user/preview')->name('预览数据')->option(['__GROUP__' => '用户']);
     Route::put('user/:id/password', 'user/updatePassword')
         ->model(\app\model\UserModel::class)
         ->name('修改密码')->option(['__GROUP__' => '用户']);
