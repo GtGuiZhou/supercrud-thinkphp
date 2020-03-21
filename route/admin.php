@@ -65,7 +65,7 @@ Route::group('admin', function () {
         ->middleware(\app\middleware\CheckImageCapcha::class);
 
 
-})->middleware(\app\middleware\RegisterAuth::class, \app\model\AdminModel::class)
+})->middleware(\app\middleware\RegisterAuth::class, \app\model\AdminUserModel::class)
     ->prefix('admin.');
 
 
@@ -85,7 +85,7 @@ Route::group('admin', function () {
     // 规则
     Route::get('rule', 'rule/index')->name('查看')->option(['__GROUP__' => '规则']);
 })->prefix('admin.')
-    ->middleware(\app\middleware\RegisterAuth::class, \app\model\AdminModel::class)
+    ->middleware(\app\middleware\RegisterAuth::class, \app\model\AdminUserModel::class)
     ->middleware(\app\middleware\LoginPolicy::class);
 
 
@@ -110,13 +110,13 @@ Route::group('admin', function () {
 //    管理员
     fastCrud('admin', '管理员');
     Route::get('admin/:id/login', 'admin/login') // 登录某个管理员的账号
-    ->model(\app\model\AdminModel::class)
+    ->model(\app\model\AdminUserModel::class)
         ->name('登录管理员')->option(['__GROUP__' => '管理员']);
     Route::put('admin/:id/root', 'admin/updateRoot')
-        ->model(\app\model\AdminModel::class)
+        ->model(\app\model\AdminUserModel::class)
         ->name('切换超级管理员')->option(['__GROUP__' => '管理员']);
     Route::put('admin/:id/password', 'admin/updatePassword')
-        ->model(\app\model\AdminModel::class)
+        ->model(\app\model\AdminUserModel::class)
         ->name('修改密码')->option(['__GROUP__' => '管理员']);
 
 
@@ -134,6 +134,6 @@ Route::group('admin', function () {
     Route::get('config','config/index')->name('查看')->option(['__GROUP__' => '系统配置']);
     Route::post('config','config/save')->name('修改')->option(['__GROUP__' => '系统配置']);
 })->prefix('admin.')
-    ->middleware(\app\middleware\RegisterAuth::class, \app\model\AdminModel::class)
+    ->middleware(\app\middleware\RegisterAuth::class, \app\model\AdminUserModel::class)
     ->middleware(\app\middleware\LoginPolicy::class)
     ->middleware(\app\middleware\RulePolicy::class);

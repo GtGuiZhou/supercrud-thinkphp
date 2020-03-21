@@ -30,18 +30,6 @@ Route::group('', function () {
 
 
 
-Route::group('api/captcha', function () {
-    Route::get('image', 'image')
-        ->middleware(\app\middleware\IntervalGuard::class, 2, 2);
-    Route::get('sms/:phone', 'sms')
-        ->middleware(\app\middleware\IntervalGuard::class, 60, 1);
-    Route::post('email', 'email')
-        ->middleware(\app\middleware\IntervalGuard::class, 60, 1);
-})->prefix('api.captcha/');
 
-
-// 上传文件
-Route::post('api/file/upload','api.file/upload');
-Route::post('api/file/uploadMulit','api.file/uploadMulit');
 
 

@@ -6,7 +6,7 @@ namespace app\controller\admin;
 
 use app\AdminController;
 use app\exceptions\CheckException;
-use app\model\AdminModel;
+use app\model\AdminUserModel;
 use app\model\AdminRoleMenuModel;
 use app\model\AdminRoleRuleModel;
 use app\service\EmailCaptchaService;
@@ -20,7 +20,7 @@ class Auth extends AdminController
 
     protected function initialize()
     {
-        $this->model = new AdminModel();
+        $this->model = new AdminUserModel();
     }
 
     public function index()
@@ -60,7 +60,7 @@ class Auth extends AdminController
             'username|用户名' => 'require|length:6,16',
             'new_password|新密码' => 'require|length:6,16'
         ]);
-        $admin = AdminModel::where('username',$data['username'])->findOrFail();
+        $admin = AdminUserModel::where('username',$data['username'])->findOrFail();
         $this->policyCheck($admin);
         $admin->password = $data['new_password'];
         $admin->save();

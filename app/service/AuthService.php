@@ -4,6 +4,8 @@
 namespace app\service;
 
 
+use app\exceptions\NoLoginException;
+use app\model\SessionUserModel;
 use think\Model;
 use think\Request;
 
@@ -64,28 +66,33 @@ class AuthService
         return $this->userModel->getTable() . '_id';
     }
 
-    public function __construct(Model $userModel)
+    public function __construct(SessionUserModel $userModel)
     {
         $this->app = app();
         $this->userModel = $userModel;
-        $userId = $this->app->session->get($this->getSessionKey());
-        $user = $userModel->find($userId);
+        $data = $this->app->session->get($this->getSessionKey());
+        $user = $userModel->find($data['user_id']);
         if ($user) {
+            if ($user->getUpdateTime() != $data['update_time']){
+                throw new NoLoginException('个人信息已被更新,请重新登录');
+            }
             $this->user = $user;
             $this->logged = true;
         }
     }
 
 
-
     /**
      * 保存登录状态,返回会话id
-     * @param Model $user
+     * @param SessionUserModel $user
      * @return mixed
      */
-    public function saveLogin(Model $user)
+    public function saveLogin(SessionUserModel $user)
     {
-        $this->app->session->set($this->getSessionKey(), $user[$user->getPk()]);
+        $this->app->session->set($this->getSessionKey(), [
+            'user_id' => $user[$user->getPk()],
+            'update_time' => $user->getUpdateTime()
+        ]);
         $this->logged = true;
         return $this->app->session->getId();
     }

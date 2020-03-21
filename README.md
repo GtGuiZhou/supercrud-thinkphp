@@ -21,9 +21,9 @@ ua分布图
 3. 回调接口:`http://yourhost/wechat/offical/callback`,授权成功后,浏览器会跳转到该接口。
 
 ## 待完成
-1. 用户数据更新，其他登录失效
-2. 引入Swagger,参考文档：https://learnku.com/laravel/t/7430/how-to-write-api-documents-based-on-swagger-php
-3. 将上传文件统一放在public/storage文件夹中,然后根据md5读取文件
-4. api说明清单
+1. 引入Swagger,参考文档：https://learnku.com/laravel/t/7430/how-to-write-api-documents-based-on-swagger-php
+2. api说明清单
+3. 增加云存储
+
 
 验证码凭证-》验证要保存的的数据-》保存数据

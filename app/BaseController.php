@@ -4,7 +4,7 @@ declare (strict_types = 1);
 namespace app;
 
 use app\middleware\auth\Auth;
-use app\model\AdminModel;
+use app\model\AdminUserModel;
 use app\model\UserModel;
 use think\App;
 use think\exception\ValidateException;
@@ -24,7 +24,7 @@ abstract class BaseController
 
     /**
      * 登录的管理员模型
-     * @var AdminModel
+     * @var AdminUserModel
      */
     protected $admin;
 

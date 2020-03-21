@@ -9,7 +9,7 @@ use think\Model;
 /**
  * @mixin think\Model
  */
-class AdminModel extends Model
+class AdminUserModel extends SessionUserModel
 {
     //
     protected $table = 'admin';
@@ -83,5 +83,13 @@ class AdminModel extends Model
     public function haveRule($rule)
     {
         return $this->isRootRole() || $this->role->rule()->where('rule',$rule)->find();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUpdateTime(): int
+    {
+        return strtotime($this->create_time);
     }
 }

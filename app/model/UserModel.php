@@ -9,7 +9,7 @@ use think\Model;
 /**
  * @mixin Model
  */
-class UserModel extends Model
+class UserModel extends SessionUserModel
 {
     use UserModelResourceRelationTrait;
 
@@ -49,5 +49,14 @@ class UserModel extends Model
     public function profile()
     {
         return $this->hasOne(UserProfileModel::class,'user_id','id');
+    }
+
+
+    /**
+     * @inheritDoc
+     */
+    public function getUpdateTime(): int
+    {
+        return strtotime($this->create_time);
     }
 }
