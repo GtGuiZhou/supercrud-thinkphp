@@ -16,16 +16,6 @@ class UserModel extends Model
     //
     protected $table = 'user';
 
-
-
-    public static function onBeforeInsert(Model $model)
-    {
-        // 检测用户是否已经在系统里面了
-        if (UserModel::where('username',$model->username)->find()){
-            throw new CheckException('该用户已存在');
-        }
-    }
-
     /**
      * 给密码加密
      * @param $val

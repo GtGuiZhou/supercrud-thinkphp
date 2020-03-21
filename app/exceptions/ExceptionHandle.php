@@ -6,6 +6,7 @@ namespace app\exceptions;
 
 use think\exception\Handle;
 use think\exception\ValidateException;
+use think\facade\Env;
 use think\facade\Log;
 use think\Response;
 use Throwable;
@@ -31,12 +32,12 @@ class ExceptionHandle extends Handle
 
         Log::error(" [{$request->url()}] ".$e->getMessage());
 
-        if (!config('app.debug')){
-            // 生产模式不展示错误详细信息
+        if (!Env::get('APP_DEBUG')){
+            // 生产模式,不展示错误详细信息
             return json(['message' => '服务器内部错误'],500);
         } else {
-            // 开发模式交个框架，展示详细信息便于调试
-            return parent::render($request, $e);
+            // 开发模式,展示详细信息便于调试
+            return Response::create($this->renderExceptionContent($e))->code(500);
         }
     }
 

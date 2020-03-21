@@ -8,7 +8,7 @@ namespace app\exceptions;
  * Class InternalException
  * @package app\exceptions
  */
-class InternalException
+class InternalException extends \Exception
 {
 
 }

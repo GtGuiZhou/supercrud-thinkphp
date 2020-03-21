@@ -16,6 +16,11 @@ use think\Validate;
  */
 abstract class BaseController
 {
+    /**
+     * 是否自动抛出异常
+     * @var bool
+     */
+    protected $failException = true;
 
     /**
      * 登录的管理员模型
@@ -141,7 +146,7 @@ abstract class BaseController
             $v->batch(true);
         }
 
-        $v->failException(true)->check($data);
+        $v->failException($this->failException)->check($data);
 
         return  $data;
     }

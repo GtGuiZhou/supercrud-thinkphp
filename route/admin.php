@@ -8,6 +8,12 @@ if (!function_exists('fastCrud')) {
         Route::get($prefix, $prefix . '/index')->name("查看")->option([
             '__GROUP__' => $name
         ]);
+        Route::get($prefix.'/export', $prefix . '/export')->name("导出")->option([
+            '__GROUP__' => $name
+        ]);
+        Route::post($prefix.'/import', $prefix . '/import')->name("导出")->option([
+            '__GROUP__' => $name
+        ]);
         Route::post($prefix, $prefix . '/insert')->name("新增")->option([
             '__GROUP__' => $name
         ]);

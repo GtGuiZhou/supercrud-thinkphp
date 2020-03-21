@@ -22,7 +22,7 @@ class RulePolicy
         $method = $request->rule()->getMethod();
         // 通过调用当前用户模型中的haveRule方法判断当前用户是否拥有该权限
         if(!$user->haveRule("$method-$rule")){
-            throw new CheckException();
+            throw new CheckException('您无权访问');
         }
         return  $next($request);
     }
