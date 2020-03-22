@@ -82,7 +82,6 @@ class Auth extends UserController
     {
         return json([
             'user' => $this->user->visible(['nickname','avatar']),
-            'luck_record' => $this->user->luckRecord()->withJoin('gift')->select()
         ]);
     }
 

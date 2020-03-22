@@ -20,10 +20,13 @@ ua分布图
 2. 请求授权接口:`http://yourhost/wechat/offical/auth`,通过将浏览器跳转到该接口,获取用户的授权信息
 3. 回调接口:`http://yourhost/wechat/offical/callback`,授权成功后,浏览器会跳转到该接口。
 
+## 文件上传云存储
+执行`php think autocouldstore`命令即可,这是一个上传脚本
+
 ## 待完成
 1. 引入Swagger,参考文档：https://learnku.com/laravel/t/7430/how-to-write-api-documents-based-on-swagger-php
 2. api说明清单
-3. 增加云存储
+4. 执行file->read方法时检测当前文件是存储在本地的,要能够支持跨服务器访问
 
 
 验证码凭证-》验证要保存的的数据-》保存数据

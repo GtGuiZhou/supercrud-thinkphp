@@ -33,7 +33,9 @@
         "jaybizzle/crawler-detect": "^1.2",
         "ua-parser/uap-php": "^3.9",
       "ext-json": "*",
-        "phpoffice/phpspreadsheet": "^1.11"
+        "phpoffice/phpspreadsheet": "^1.11",
+        "qcloud/cos-sdk-v5": "^2.0",
+        "aliyuncs/oss-sdk-php": "^2.3"
     },
     "require-dev": {
         "symfony/var-dumper": "^4.2",

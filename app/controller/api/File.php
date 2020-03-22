@@ -13,19 +13,18 @@ use think\facade\Filesystem;
 class File extends BaseController
 {
 
-    private function cacheKey($md5){
-        return 'file:'.$md5;
-    }
+    
 
     public function upload()
     {
         $file = $this->request->file('file');
-        if (!Cache::has($this->cacheKey($file->md5())) && !FileModel::where('md5',$file->md5())->find()){
+        if (!Cache::has(FileModel::cacheKey($file->md5())) && !FileModel::where('md5',$file->md5())->find()){
             $url = Filesystem::disk('local')->putFIle('upload', $file, 'md5');
-            Cache::set($this->cacheKey($file->md5()),$url);
+            Cache::set(FileModel::cacheKey($file->md5()),$url);
             FileModel::create([
                 'md5' => $file->md5(),
-                'url' => $url
+                'url' => $url,
+                'local_url' => $url
             ]);
         }
 
@@ -34,7 +33,7 @@ class File extends BaseController
 
     public function read($md5)
     {
-        if (!$url = Cache::get($this->cacheKey($md5))){
+        if (!$url = Cache::get(FileModel::cacheKey($md5))){
             if ($model = FileModel::where('md5',$md5)->find()){
                 $url = $model['url'];
             } else {
@@ -42,7 +41,10 @@ class File extends BaseController
             }
         }
 
-        return download(config('filesystem.disks.local.root').DIRECTORY_SEPARATOR.$url);
+        // 检测是不是本地存储的文件
+        if (strpos($url,'http') !== 0)
+            $url = config('filesystem.disks.local.root').DIRECTORY_SEPARATOR.$url;
+        return download($url);
     }
 
     public function uploadMulti()
@@ -51,12 +53,13 @@ class File extends BaseController
         $files = $this->request->file('file');
         $data = [];
         foreach ($files as $file) {
-            if (!Cache::has($this->cacheKey($file->md5())) && FileModel::where('md5', $file->md5())->find()) {
+            if (!Cache::has(FileModel::cacheKey($file->md5())) && FileModel::where('md5', $file->md5())->find()) {
                 $url = Filesystem::disk('local')->putFIle('upload', $file, 'md5');
-                Cache::set($this->cacheKey($file->md5()), $url);
+                Cache::set(FileModel::cacheKey($file->md5()), $url);
                 $data[] = [
                     'md5' => $file->md5(),
-                    'url' => $url
+                    'url' => $url,
+                    'local_url' => $url
                 ];
             }
         }
