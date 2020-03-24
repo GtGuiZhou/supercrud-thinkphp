@@ -10,7 +10,7 @@ return [
             'region' => 'ap-chengdu',
             //协议头部，默认为http
             'schema' => 'https',
-            'secret_id' => 'xxxxxxxxxxxx',
+            'secret_id' => 'xxxxxxxxx',
             'secret_key' => 'xxxxxxxxxxx',
             // 存储桶
             'bucket' => 'xxxxxx-1253299711',
@@ -21,8 +21,8 @@ return [
             'region' => 'oss-cn-shenzhen.aliyuncs.com',
             //协议头部，默认为http
             'schema' => 'https',
-            'secret_id' => 'xxxxxxxxxxxxxxxx',
-            'secret_key' => 'xxxxxxxxxxxxx',
+            'secret_id' => 'xxxxxxx',
+            'secret_key' => 'xxxxxxxxxx',
             // 存储桶
             'bucket' => 'xxxx',
         ]

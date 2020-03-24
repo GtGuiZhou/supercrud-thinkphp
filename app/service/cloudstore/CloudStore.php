@@ -4,6 +4,8 @@
 namespace app\service\cloudstore;
 
 
+use function GuzzleHttp\Psr7\stream_for;
+
 class CloudStore
 {
 
@@ -22,7 +24,9 @@ class CloudStore
 
     public function storeByPath($path,$storePath = null) : string
     {
-        $file = file_get_contents($path);
+        $handle = fopen($path,'r');
+        $file = fread($handle,filesize($path));
+        fclose($handle);
         if ($storePath === null) {
             $storePath = md5_file($path).'.'.pathinfo($path,PATHINFO_EXTENSION);
         }

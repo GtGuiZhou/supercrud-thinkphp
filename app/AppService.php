@@ -14,12 +14,9 @@ class AppService extends Service
 {
     public function register()
     {
-
         // redis分布式锁
         $this->app->bind('redlock',new RedLock(config('redlock')));
 
-        // 微信支付
-        $this->app->bind('wechatPay',Factory::payment(config('wechat.pay')));
     }
 
     public function boot()

@@ -5,6 +5,7 @@ namespace app\command;
 
 use app\service\cloudstore\CloudStore;
 use app\model\FileModel;
+use app\service\FileStoreService;
 use think\console\Command;
 use think\console\Input;
 use think\console\Output;
@@ -32,12 +33,13 @@ class AutoCloudStore extends Command
             return;
         }
         $cloudStore = new CloudStore($driverConfig);
-//        while (true) {z
+        $storeService = new FileStoreService();
+//        while (true) {
         $syncFiles = FileModel::where('driver', 'local')->limit(100)->select();
         foreach ($syncFiles as $file) {
             $md5 = $file['md5'];
             try {
-                $path = config('filesystem.disks.local.root') . DIRECTORY_SEPARATOR . $file['local_url'];
+                $path =  $storeService->getPath($file['local_url']);
                 $url = $cloudStore->storeByPath($path);
                 // 更新数据库记录
                 $file['driver'] = $driverName;

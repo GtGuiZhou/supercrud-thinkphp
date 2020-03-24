@@ -17,5 +17,8 @@ Route::group('api/file',function (){
     Route::post('upload','api.file/upload');
     Route::post('uploadMulit','api.file/uploadMulit');
     Route::get(':md5','api.file/read');
-});
+    Route::get('local/:md5','api.file/readLocal');
+})->pattern([
+    'md5' => '\w+'
+]);;
 
