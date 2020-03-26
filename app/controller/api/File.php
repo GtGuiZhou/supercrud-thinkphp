@@ -77,7 +77,7 @@ class File extends BaseController
             return redirect($url);
         }
         // 本地存储
-        if ($file = $storeService->getPath($url)) {
+        if ($file = $storeService->getPath($md5)) {
             return download($file, pathinfo($url, PATHINFO_BASENAME), true);
         }
         throw new CheckException('文件不存在');
