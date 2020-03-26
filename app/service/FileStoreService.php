@@ -53,11 +53,9 @@ class FileStoreService
         return \think\facade\Filesystem::disk('local')->get($url);
     }
 
-    public function getPath($url)
+    public function getPath($md5)
     {
-        // 没有检测文件是否存在的方法,就只能够获取大小来检测了
-        if (!\think\facade\Filesystem::disk('local')->getSize($url))
-            return false;
+        $url = $this->getFileUrl($md5);
         return \think\facade\Filesystem::disk('local')->path($url);
     }
 
