@@ -10,10 +10,10 @@ return [
             'region' => 'ap-chengdu',
             //协议头部，默认为http
             'schema' => 'https',
-            'secret_id' => 'xxxxxxxxx',
-            'secret_key' => 'xxxxxxxxxxx',
+            'secret_id' => 'AKIDlRev3C9tZ3MTN7c6QdfVAdy86sSdtO2T',
+            'secret_key' => 'NYaR6ZZQ84sX0RltthJl6II7sWHvRo37',
             // 存储桶
-            'bucket' => 'xxxxxx-1253299711',
+            'bucket' => 'gtguizhou-1253299711',
         ],
         'aliyun' => [
             'driver' => \app\service\cloudstore\driver\Aliyun::class,

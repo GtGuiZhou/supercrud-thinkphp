@@ -12,12 +12,14 @@ Route::group('api/captcha', function () {
 })->prefix('api.captcha/');
 
 
-// 上传文件
+// 上传文件相关
 Route::group('api/file',function (){
     Route::post('upload','api.file/upload');
     Route::post('uploadMulit','api.file/uploadMulit');
     Route::get(':md5','api.file/read');
     Route::get('local/:md5','api.file/readLocal');
+
+    Route::get('cos-config','api.file/cosConfig');
 })->pattern([
     'md5' => '\w+'
 ]);;

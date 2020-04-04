@@ -39,7 +39,7 @@ class File extends BaseController
             ]);
         }
 
-        return '/api/file/' . $file->md5();
+        return json('/api/file/' . $file->md5());
     }
 
     public function read($md5)
@@ -51,8 +51,8 @@ class File extends BaseController
             return redirect($url);
         }
         // 本地存储
-        if ($path = $storeService->readLocal($url)) {
-            return download($path, pathinfo($url, PATHINFO_BASENAME));
+        if ($path = $storeService->getPath($md5)) {
+            return download($path, pathinfo($path, PATHINFO_BASENAME));
         }
         // 存储在其他服务器上
         if ($file = $storeService->readOtherServers($md5)) {
@@ -77,8 +77,8 @@ class File extends BaseController
             return redirect($url);
         }
         // 本地存储
-        if ($file = $storeService->getPath($md5)) {
-            return download($file, pathinfo($file, PATHINFO_BASENAME), true);
+        if ($path = $storeService->getPath($md5)) {
+            return download($path, pathinfo($path, PATHINFO_BASENAME));
         }
         throw new CheckException('文件不存在');
     }
@@ -108,5 +108,13 @@ class File extends BaseController
         }, $data);
 
         return json($result);
+    }
+
+    /**
+     * 腾讯云配置信息
+     */
+    public function cosConfig()
+    {
+        return config('cloudstore.driver.qcloud');
     }
 }

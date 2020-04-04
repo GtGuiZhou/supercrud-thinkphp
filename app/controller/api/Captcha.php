@@ -33,6 +33,8 @@ class Captcha
             throw new CheckException('邮箱格式错误');
         }
 
+
+
         EmailCaptchaService::send($email);
     }
 }
