@@ -40,7 +40,8 @@ class Builder extends Command
         $tplController = file_get_contents($templateDir . 'controller.tpl');
         $tplModel = file_get_contents($templateDir . 'model.tpl');
         $tplVuePagePath = $templateDir . 'vue-page.tpl';
-        $routers = [];
+        $backendRouters = [];
+        $frontendRouters = [];
         foreach ($tables as $table) {
             // 获取字段信息
             $tableName = $table['table_name'];
@@ -53,7 +54,9 @@ class Builder extends Command
             $generateModel = $this->createModel($className, $tableName, $tplModel);
             file_put_contents($builderModelDir . "${className}Model.php", $generateModel);
             // 保存后端路由信息
-            $routers[] = $this->createRouter($tableName, $table['table_comment']);
+            $backendRouters[] = $this->createBackendRouter($tableName, $table['table_comment']);
+            /// 保存前端路由信息
+            $frontendRouters[] = $this->createFrontendRouter($tableName, $table['table_comment']);
             // 生成vue页面
             $pageDirName = strtolower(str_replace('_', '-', $tableName));
             $vuePageDir = $builderVuePageDir . $pageDirName . DIRECTORY_SEPARATOR;
@@ -61,11 +64,13 @@ class Builder extends Command
             $generateVuePage = $this->createVuePage($tplVuePagePath, $tableName, $columns);
             file_put_contents($vuePageDir . 'Index.vue', $generateVuePage);
         }
-        // 生成路由
-        file_put_contents($builderDir . 'router.php', "<?php\n" . implode("\n", $routers));
+        // 生成后端路由
+        file_put_contents($builderDir . 'backend_router.php', "<?php\n" . implode("\n", $backendRouters));
+        // 生成vue前端路由
+        file_put_contents($builderDir . 'frontend_router.js',  implode(",\n", $frontendRouters));
     }
 
-    private function createRouter($tableName, $comment)
+    private function createBackendRouter($tableName, $comment)
     {
         $comment = $comment ?: $tableName;
         $tableName = strtolower(str_replace('_', '-', $tableName));
@@ -73,6 +78,13 @@ class Builder extends Command
     // $comment
     fastCrud('$tableName', '$comment');
 EOF;
+    }
+
+    private function createFrontendRouter($tableName, $comment)
+    {
+        $comment = $comment ?: $tableName;
+        $tableName = strtolower(str_replace('_', '-', $tableName));
+        return "{name:'$tableName',path:'/admin/$tableName',component: _import('container/$tableName/Index'),label: '$comment',menu: true,parent: 'root'}";
     }
 
     private function createModel($className, $tableName, $template)
